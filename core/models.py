@@ -26,8 +26,8 @@ class Article(models.Model):
         User, related_name='authored_articles', on_delete=models.PROTECT)
     publisher = models.ForeignKey(
         User, related_name='published_articles', on_delete=models.PROTECT)
-    date_created = models.DateField(auto_now_add=True)
-    date_edited = models.DateField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_edited = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

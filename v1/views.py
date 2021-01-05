@@ -1,4 +1,3 @@
-from api.serializers import CategorySerializer
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, status, mixins, filters
 from core.models import *
