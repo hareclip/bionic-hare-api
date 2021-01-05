@@ -21,7 +21,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     dateVisible = serializers.DateTimeField(source='date_created')
     categoryId = serializers.IntegerField(source='category.id')
     categoryLabel = serializers.CharField(source='category.label')
-    fullName = serializers.SerializerMethodField('get_full_name')
+    authorFullName = serializers.SerializerMethodField('get_full_name')
 
     def get_full_name(self, article):
         return f'{article.author.first_name} {article.author.last_name}'.strip()
@@ -29,4 +29,5 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ['id', 'contentsFileName', 'title', 'headerImageFileName',
-                  'category', 'author', 'dateCreated', 'dateEdited', 'dateVisible', 'publisher', 'categoryId', 'categoryLabel', 'fullName']
+                  'category', 'author', 'dateCreated', 'dateEdited', 'dateVisible',
+                  'publisher', 'categoryId', 'categoryLabel', 'authorFullName']
