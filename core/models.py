@@ -48,9 +48,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    if instance.profile == None:
+    try:
+        instance.profile.save()
+    except ObjectDoesNotExist:
         instance.profile = Profile.objects.create(user=instance)
-    instance.profile.save()
 
 
 class Category(models.Model):
