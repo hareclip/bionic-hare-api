@@ -38,12 +38,13 @@ def create_user(request):
         return Response('new user role must be integer', 400)
 
     try:
-        User.objects.create(
+        user = User(
             username=username,
-            password=password,
             is_staff=(role >= 2),
             is_superuser=(role >= 3),
         )
+        user.set_password(password)
+        user.save()
         return Response('user created', 201)
     except IntegrityError:
         return Response('user could not be created', 400)

@@ -1,6 +1,6 @@
 from v1.views import admin
 from django.urls import path
-from .views import admin, authors, categories, articles
+from .views import admin, authors, articles, categories, staff
 
 urlpatterns = [
     path('admin/auth', admin.check_auth),
@@ -19,4 +19,8 @@ urlpatterns = [
 
     path('categories/', categories.list_all),
     path('categories/<int:category_id>/', categories.get_by_id),
+
+    path('staff/auth/', staff.check_auth),
+    path('staff/create-author/', staff.create_author),
+    path('staff/publish-article/', staff.publish_article),
 ]
