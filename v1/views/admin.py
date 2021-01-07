@@ -7,6 +7,7 @@ from core.models import *
 from ..serializers import *
 from ..utils import auth_decorator
 
+
 @api_view(['POST'])
 @auth_decorator({3})
 def check_auth(request):
@@ -30,8 +31,19 @@ def create_user(request):
     if role == None:
         return Response('new user role is required', 400)
 
+    # Parse role
     try:
-        User.objects.create(username=username, password=password)
+        role = int(role)
+    except ValueError:
+        return Response('new user role must be integer', 400)
+
+    try:
+        User.objects.create(
+            username=username,
+            password=password,
+            is_staff=(role >= 2),
+            is_superuser=(role >= 3),
+        )
         return Response('user created', 201)
     except IntegrityError:
         return Response('user could not be created', 400)

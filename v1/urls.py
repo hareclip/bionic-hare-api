@@ -9,7 +9,8 @@ urlpatterns = [
     path('admin/create-user', admin.create_user),
     path('admin/delete-article', admin.delete_article),
 
-    path('categories/', categories.CategoryView.as_view()),
+    path('categories/', categories.list_all),
+    path('categories/<int:category_id>/', categories.get_by_id),
 
     path('articles/count/', articles.get_count),
     path('articles/search/', articles.search),
