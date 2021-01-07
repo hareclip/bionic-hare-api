@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         return f'{user.first_name} {user.last_name}'.strip()
 
     def get_created_by(self, user):
-        return user.profile.created_by.id if user.profile != None else None
+        return user.profile.created_by.id if user.profile.created_by != None else None
 
     class Meta:
         model = User

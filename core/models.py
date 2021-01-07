@@ -33,7 +33,7 @@ class Profile(models.Model):
     is_author = models.BooleanField(default=False)
     is_publisher = models.BooleanField(default=False)
     created_by = models.ForeignKey(
-        User, null=True, related_name='created_profiles', on_delete=models.PROTECT,
+        User, null=True, blank=True, related_name='created_profiles', on_delete=models.PROTECT,
     )
 
     def __str__(self):

@@ -89,6 +89,10 @@ def publish_article(request):
     except ObjectDoesNotExist:
         return Response('author not found', 400)
 
+    # Validates publisher
+    if not request.user.profile.is_publisher:
+        return Response('user does not have publishing permissions', 403)
+
     try:
         article = Article.objects.create(
             title=title,

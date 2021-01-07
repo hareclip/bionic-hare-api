@@ -27,8 +27,11 @@ def search(request):
         return Response('searchTerm is required', 400)
 
     # TODO: mirror article content in db and replace with full-text search?
-    articles = Article.objects.filter(Q(title__icontains=search_term) | Q(author__first_name=search_term) | Q(author__last_name=search_term)).order_by(
-        '-date_created')[:num_articles]
+    articles = Article.objects.filter(
+        Q(title__icontains=search_term) |
+        Q(author__first_name=search_term) |
+        Q(author__last_name=search_term)
+    ).order_by('-date_created')[:num_articles]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})
 
