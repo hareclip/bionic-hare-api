@@ -8,6 +8,6 @@ from ..serializers import *
 def list_all(request):
     """Gets all authors
     """
-    profiles = AuthorProfile.objects.all()
-    serializer = AuthorProfileSerializer(profiles, many=True)
-    return Response({'data': {'authors': serializer.data, 'count': profiles.count()}})
+    authors = User.objects.filter(profile__is_author=True)
+    serializer = UserSerializer(authors, many=True)
+    return Response({'data': {'authors': serializer.data, 'count': authors.count()}})

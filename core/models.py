@@ -4,6 +4,8 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.utils.deconstruct import deconstructible
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 @deconstructible
@@ -24,16 +26,31 @@ class RenameFile():
         return os.path.join(self.upload_to, filename)
 
 
-class AuthorProfile(models.Model):
-    """Author profile
+class Profile(models.Model):
+    """User profile
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_author = models.BooleanField(default=False)
+    is_publisher = models.BooleanField(default=False)
     created_by = models.ForeignKey(
-        User, related_name='created_author_profiles', on_delete=models.PROTECT,
+        User, null=True, related_name='created_profiles', on_delete=models.PROTECT,
     )
 
     def __str__(self):
         return self.user.username
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    if instance.profile == None:
+        instance.profile = Profile.objects.create(user=instance)
+    instance.profile.save()
 
 
 class Category(models.Model):

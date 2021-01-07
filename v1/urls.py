@@ -3,9 +3,9 @@ from django.urls import path
 from .views import admin, authors, articles, categories, staff
 
 urlpatterns = [
-    path('admin/auth', admin.check_auth),
-    path('admin/create-user', admin.create_user),
-    path('admin/delete-article', admin.delete_article),
+    path('admin/auth/', admin.check_auth),
+    path('admin/create-user/', admin.create_user),
+    path('admin/delete-article/', admin.delete_article),
 
     path('articles/count/', articles.get_count),
     path('articles/search/', articles.search),

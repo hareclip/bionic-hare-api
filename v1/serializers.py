@@ -3,18 +3,20 @@ from rest_framework import serializers
 from core.models import *
 
 
-class AuthorProfileSerializer(serializers.ModelSerializer):
-    """Author serializer
+class UserSerializer(serializers.ModelSerializer):
+    """User serializer
     """
-    id = serializers.IntegerField(source='user.id')
     fullName = serializers.SerializerMethodField('get_full_name')
-    createdBy = serializers.IntegerField(source='created_by.id')
+    createdBy = serializers.SerializerMethodField('get_created_by')
 
-    def get_full_name(self, profile):
-        return f'{profile.user.first_name} {profile.user.last_name}'.strip()
+    def get_full_name(self, user):
+        return f'{user.first_name} {user.last_name}'.strip()
+
+    def get_created_by(self, user):
+        return user.profile.created_by.id if user.profile != None else None
 
     class Meta:
-        model = AuthorProfile
+        model = User
         fields = ['id', 'fullName', 'createdBy']
 
 

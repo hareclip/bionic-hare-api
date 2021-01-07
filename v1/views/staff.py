@@ -1,5 +1,6 @@
 import uuid
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.db import IntegrityError
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
@@ -35,13 +36,13 @@ def create_author(request):
         )
         user.set_unusable_password()
         user.save()
-        AuthorProfile.objects.create(
-            user=user,
-            created_by=request.user,
-        )
+
+        user.profile.is_author = True
+        user.profile.created_by = request.user
+        user.save()
         return Response('user created', 201)
     except IntegrityError:
-        return Response('user could not be created', 400)
+        return Response('user could not be created', 500)
 
 
 @api_view(['POST'])
@@ -81,7 +82,10 @@ def publish_article(request):
     except ObjectDoesNotExist:
         return Response('category not found', 400)
     try:
-        author = AuthorProfile.objects.get(user__id=author_id).user
+        author = User.objects.get(
+            Q(id=author_id) &
+            Q(profile__is_author=True)
+        )
     except ObjectDoesNotExist:
         return Response('author not found', 400)
 

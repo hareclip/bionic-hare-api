@@ -67,7 +67,7 @@ def get_by_id(request, article_id):
     """Gets article by id
     """
     try:
-        article = Article.objects.get(id=article_id)[:num_articles]
+        article = Article.objects.get(id=article_id)
         serializer = ArticleSerializer(article)
         return Response({'data': serializer.data})
     except ObjectDoesNotExist:
