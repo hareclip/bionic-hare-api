@@ -78,6 +78,7 @@ def get_by_id(request, article_id):
 def list_all(request):
     """Lists all articles
     """
+    # TODO: pagination
     articles = Article.objects.all().order_by('-date_created')
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})

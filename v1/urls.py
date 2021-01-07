@@ -1,9 +1,14 @@
+from v1.views import admin
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework.authtoken.views import obtain_auth_token
-from .views import categories, articles
+from .views import admin, categories, articles
 
 urlpatterns = [
+    path('admin/auth', admin.check_auth),
+    path('admin/create-user', admin.create_user),
+    path('admin/delete-article', admin.delete_article),
+
     path('categories/', categories.CategoryView.as_view()),
 
     path('articles/count/', articles.get_count),
