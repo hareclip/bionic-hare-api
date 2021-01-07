@@ -1,5 +1,20 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class AuthorProfile(models.Model):
+    """Author profile
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        User, related_name='created_author_profiles', on_delete=models.PROTECT,
+    )
+
+    def __str__(self):
+        return self.user.username
 
 
 class Category(models.Model):

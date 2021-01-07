@@ -3,6 +3,21 @@ from rest_framework import serializers
 from core.models import *
 
 
+class AuthorProfileSerializer(serializers.ModelSerializer):
+    """Author serializer
+    """
+    id = serializers.IntegerField(source='user.id')
+    fullName = serializers.SerializerMethodField('get_full_name')
+    createdBy = serializers.IntegerField(source='created_by.id')
+
+    def get_full_name(self, profile):
+        return f'{profile.user.first_name} {profile.user.last_name}'.strip()
+
+    class Meta:
+        model = AuthorProfile
+        fields = ['id', 'fullName', 'createdBy']
+
+
 class CategorySerializer(serializers.ModelSerializer):
     """Category serializer
     """
