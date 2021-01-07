@@ -49,4 +49,51 @@ def create_author(request):
 def publish_article(request):
     """Publishes article
     """
-    # TODO: implement publish article
+    title = request.POST.get('title')
+    if title == None:
+        return Response('title is required', 400)
+    category_id = request.POST.get('category')
+    if title == None:
+        return Response('category is required', 400)
+    author_id = request.POST.get('author')
+    if title == None:
+        return Response('author is required', 400)
+    contents_file = request.FILES.get('contents')
+    if contents_file == None:
+        return Response('contents is required', 400)
+    header_image = request.FILES.get('headerImage')
+    if header_image == None:
+        return Response('headerImage is required', 400)
+
+    # Parse ids
+    try:
+        category_id = int(category_id)
+    except ValueError:
+        return Response('category must be integer', 400)
+    try:
+        author_id = int(author_id)
+    except ValueError:
+        return Response('author must be integer', 400)
+
+    # Find objects by id
+    try:
+        category = Category.objects.get(id=category_id)
+    except ObjectDoesNotExist:
+        return Response('category not found', 400)
+    try:
+        author = AuthorProfile.objects.get(user__id=author_id).user
+    except ObjectDoesNotExist:
+        return Response('author not found', 400)
+
+    try:
+        article = Article.objects.create(
+            title=title,
+            category=category,
+            author=author,
+            publisher=request.user,
+            contents_file=contents_file,
+            header_image=header_image,
+        )
+        return Response(article.id, 201)
+    except IntegrityError:
+        return Response('article could not be created', 400)

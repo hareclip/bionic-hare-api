@@ -1,8 +1,27 @@
+import os
+import uuid
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.utils.deconstruct import deconstructible
+
+
+@deconstructible
+class RenameFile():
+    """File renamer factory
+    """
+
+    def __init__(self, upload_to):
+        self.upload_to = upload_to
+
+    def __call__(self, instance, filename):
+        ext = filename.split('.')[-1]
+        # Set new file name
+        if instance.id:
+            filename = '{}.{}'.format(instance.id, ext)
+        else:
+            filename = '{}.{}'.format(uuid.uuid4().hex, ext)
+        return os.path.join(self.upload_to, filename)
 
 
 class AuthorProfile(models.Model):
@@ -33,8 +52,8 @@ class Article(models.Model):
     """Article model
     """
     title = models.CharField(max_length=300)
-    contents_file = models.FileField(upload_to='uploads/')
-    header_image = models.ImageField(upload_to='uploads/')
+    contents_file = models.FileField(upload_to=RenameFile('res/articles/'))
+    header_image = models.ImageField(upload_to=RenameFile('res/images/'))
     category = models.ForeignKey(
         Category, related_name='articles', on_delete=models.PROTECT)
     author = models.ForeignKey(
