@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import django_heroku
 
 load_dotenv()
 
@@ -145,3 +146,6 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 DEFAULT_FILE_STORAGE = os.getenv('DEFAULT_FILE_STORAGE')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+
+# Heroku config
+django_heroku.settings(locals())
