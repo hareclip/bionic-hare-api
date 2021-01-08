@@ -81,7 +81,28 @@ def get_by_id(request, article_id):
 def list_all(request):
     """Lists all articles
     """
-    # TODO: pagination
-    articles = Article.objects.all().order_by('-date_created')
+
+    if request.GET.get('amount') != None:
+        amount = request.GET.get('amount')
+    else:
+        amount = 5
+
+    if request.GET.get('offset') != None:
+        offset = request.GET.get('offset')
+    else:
+        offset = 0
+
+    try:
+        amount = int(amount)
+    except ValueError:
+        return Response('amount must be an integer', 400)
+
+    try:
+        offset = int(offset)
+    except ValueError:
+        return Response('offset must be an integer', 400)
+
+    articles = Article.objects.all().order_by(
+        '-date_created')[offset:offset+amount]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})
