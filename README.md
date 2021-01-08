@@ -56,9 +56,8 @@ Deploy with:
 
 Set up database:
 
-    heroku run bash
-    python manage.py migrate --settings thehare.production_settings
-    python manage.py loaddata categories.yaml --settings thehare.production_settings
+    heroku run python manage.py migrate
+    heroku run python manage.py loaddata categories.yaml
 
 ## Project Layout
   - `core`: Core models
