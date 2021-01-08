@@ -31,6 +31,8 @@ Run development server with:
 
 Create S3 bucket and AWS service user, keeping track of the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
+Configure S3 bucket `Permissions->Cross-origin resource sharing (CORS)` with `sample-cors.json`.
+
 Create `.env` from `sample.env` and insert credentials.
 
 Set up database:
