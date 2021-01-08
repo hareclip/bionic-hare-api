@@ -40,6 +40,26 @@ Set up database:
 
     waitress-serve thehare.wsgi:application
 
+## Deploy with Docker
+
+    docker-compose up --build
+
+## Deploy on Heroku
+
+Create new Heroku app and attach Heroku Postgres resource.
+
+Insert `.env` credentials into Heroku config vars.
+
+Deploy with:
+
+    heroku push origin master
+
+Set up database:
+
+    heroku run bash
+    python manage.py migrate --settings thehare.production_settings
+    python manage.py loaddata categories.yaml --settings thehare.production_settings
+
 ## Project Layout
   - `core`: Core models
   - `v1`: Hare-compatible API
