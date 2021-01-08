@@ -1,0 +1,24 @@
+- model: core.category
+  pk: 1
+  fields:
+    label: News
+- model: core.category
+  pk: 2
+  fields:
+    label: Features
+- model: core.category
+  pk: 4
+  fields:
+    label: Rabbithole
+- model: core.category
+  pk: 5
+  fields:
+    label: Sports
+- model: core.category
+  pk: 6
+  fields:
+    label: Entertainment
+- model: core.category
+  pk: 8
+  fields:
+    label: News in Images

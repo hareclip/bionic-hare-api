@@ -6,12 +6,16 @@ A port of the Hare's API to Django
 
 Create `.env` from `sample.env` and insert credentials.
 
-Create virtual environment, install dependences, and migrate models:
+Create virtual environment and install dependences:
 
     python -m venv ./venv
     ./venv/Scripts/activate
     pip install requirements.txt
+
+Set up database:
+
     python manage.py migrate
+    python manage.py loaddata categories.yaml
 
 ### Development
 
