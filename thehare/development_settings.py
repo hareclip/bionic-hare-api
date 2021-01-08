@@ -83,7 +83,6 @@ WSGI_APPLICATION = 'thehare.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -130,9 +129,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+# Base url to serve media files
+MEDIA_URL = '/media/'
 
-DEFAULT_FILE_STORAGE = os.getenv('DEFAULT_FILE_STORAGE')
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+# Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

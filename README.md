@@ -4,30 +4,41 @@ A port of the Hare's API to Django
 
 ## Setup
 
-Create `.env` from `sample.env` and insert credentials.
-
 Create virtual environment and install dependences:
 
     python -m venv ./venv
     ./venv/Scripts/activate
     pip install requirements.txt
 
+### Development
+
 Set up database:
 
-    python manage.py migrate
-    python manage.py loaddata categories.yaml
-
-### Development
+    python manage.py migrate --settings thehare.development_settings
+    python manage.py loaddata categories.yaml --settings thehare.development_settings
 
 Run development server with:
 
-    python manage.py runserver
+    python manage.py runserver --settings thehare.development_settings
 
 ### Production
 
-Run production with:
+Create S3 bucket and AWS service user, keeping track of the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
-    TODO
+Create `.env` from `sample.env` and insert credentials.
+
+Set up database:
+
+    python manage.py migrate --settings thehare.production_settings
+    python manage.py loaddata categories.yaml --settings thehare.production_settings
+
+#### Run production on UNIX
+
+    gunicorn thehare.wsgi
+
+#### Run production on Windows
+
+    waitress-serve thehare.wsgi:application
 
 ## Project Layout
   - `core`: Core models
