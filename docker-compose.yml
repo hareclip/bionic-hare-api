@@ -9,6 +9,7 @@ services:
       - "postgres:postgres"
     env_file: .env
     command: bash -c "
+      python manage.py collectstatic &&
       python manage.py migrate &&
       python manage.py loaddata categories.yaml &&
       gunicorn -b :8000 thehare.wsgi"
