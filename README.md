@@ -14,7 +14,7 @@ Create virtual environment and install dependences:
     # Windows
     ./venv/Scripts/activate
 
-    pip install requirements.txt
+    pip install -r requirements.txt
 
 ### Development
 
