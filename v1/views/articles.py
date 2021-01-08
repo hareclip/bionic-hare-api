@@ -77,7 +77,7 @@ def get_by_id(request, article_id):
         return Response('Article not found', status=404)
 
 
-@ api_view(['GET'])
+@api_view(['GET'])
 def list_all(request):
     """Lists all articles
     """
