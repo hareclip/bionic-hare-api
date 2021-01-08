@@ -7,7 +7,13 @@ A port of the Hare's API to Django
 Create virtual environment and install dependences:
 
     python -m venv ./venv
+    
+    # UNIX
+    source ./venv/bin/activate
+
+    # Windows
     ./venv/Scripts/activate
+
     pip install requirements.txt
 
 ### Development
@@ -32,12 +38,12 @@ Set up database:
     python manage.py migrate --settings thehare.production_settings
     python manage.py loaddata categories.yaml --settings thehare.production_settings
 
-#### Run production on UNIX
+Run with:
 
+    # UNIX
     gunicorn thehare.wsgi
 
-#### Run production on Windows
-
+    # Windows
     waitress-serve thehare.wsgi:application
 
 ## Deploy with Docker
