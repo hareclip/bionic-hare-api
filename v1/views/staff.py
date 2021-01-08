@@ -93,6 +93,12 @@ def publish_article(request):
     if not request.user.profile.is_publisher:
         return Response('user does not have publishing permissions', 403)
 
+    # Check content type
+    if contents_file.content_type != 'text/markdown':
+        return Response('contents must be markdown file', 400)
+    if header_image.content_type != 'image/jpg' and header_image.content_type != 'image/jpeg':
+        return Response('headerImage must be jpg file', 400)
+
     try:
         article = Article.objects.create(
             title=title,
