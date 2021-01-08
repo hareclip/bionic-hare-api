@@ -1,6 +1,6 @@
 # Bionic Hare
 
-A port of the Hare's API to Django
+A port of [the Hare's API](https://github.com/mli25782/umd-hare) to Django
 
 ## Setup
 
