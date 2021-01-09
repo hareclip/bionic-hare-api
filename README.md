@@ -70,3 +70,4 @@ Set up database:
 ## Project Layout
   - `core`: Core models
   - `v1`: Hare-compatible API
+  - `v2`: Bionic Hare re-write
