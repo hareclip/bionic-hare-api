@@ -20,8 +20,11 @@
 
 ## Adding Authors
 
-1. Create new user with dummy password
+1. Fill out form for creating user
+  * Fill password with dummy password
 
 ## Publishing Articles
 
-1. Create new article
+1. Fill out form for creating new article
+  * Ensure `Contents file` is a markdown file
+  * Ensure `Header image` is an image
