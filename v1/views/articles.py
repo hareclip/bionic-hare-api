@@ -8,6 +8,8 @@ from ..serializers import *
 
 num_articles = 6
 
+# TODO: update to filter articles on visibility
+
 
 @api_view(['GET'])
 def get_count(request):
