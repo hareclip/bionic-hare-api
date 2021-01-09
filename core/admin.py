@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import *
@@ -13,7 +14,7 @@ class UserAdmin(UserAdmin):
         else:
             if obj:
                 return (
-                    (None, {'fields': ['username']}),
+                    (None, {'fields': ['username', 'is_active']}),
                 )
             else:
                 return super().get_fieldsets(request, obj)
@@ -30,25 +31,31 @@ class UserAdmin(UserAdmin):
             return self.readonly_fields
         else:
             if obj:
-                return ['username']
+                return ['username', 'is_active']
             else:
                 return []
 
     def save_model(self, request, obj, form, change):
         super(UserAdmin, self).save_model(request, obj, form, change)
-        if request.user.is_superuser:
+        if not change:
             obj.profile.created_by = request.user
-        else:
-            # Validation for staff create
-            obj.set_unusable_password()
-            obj.profile.created_by = request.user
-            obj.profile.is_author = True
-        obj.save()
+            obj.save()
 
 
 class ProfileAdmin(admin.ModelAdmin):
     """Profile admin
     """
+
+    def get_fieldsets(self, request, obj):
+        if request.user.is_superuser:
+            return super().get_fieldsets(request, obj)
+        else:
+            return (
+                (None, {'fields': ['is_author']}),
+            )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -59,8 +66,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = ['user', 'created_by']
-        if not request.user.is_superuser:
-            readonly_fields += ['is_publisher']
         return readonly_fields
 
 
@@ -80,22 +85,27 @@ class ArticleAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'author':
-            authors = User.objects.filter(
-                profile__is_author=True,
-            )
             if request.user.is_superuser:
-                kwargs["queryset"] = authors
+                kwargs["queryset"] = User.objects.filter(
+                    Q(profile__is_author=True) & Q(is_active=True)
+                )
             else:
-                kwargs["queryset"] = authors.filter(
-                    profile__created_by=request.user)
+                kwargs["queryset"] = User.objects.filter(
+                    Q(profile__is_author=True) &
+                    Q(is_active=True) &
+                    Q(profile__created_by=request.user)
+                )
         elif db_field.name == 'publisher':
-            publishers = User.objects.filter(
-                profile__is_publisher=True,
-            )
             if request.user.is_superuser:
-                kwargs["queryset"] = publishers
+                kwargs["queryset"] = User.objects.filter(
+                    Q(profile__is_publisher=True) & Q(is_active=True)
+                )
             else:
-                kwargs["queryset"] = publishers.filter(id=request.user.id)
+                kwargs["queryset"] = User.objects.filter(
+                    Q(profile__is_publisher=True) &
+                    Q(is_active=True) &
+                    Q(id=request.user.id)
+                )
 
         return super(ArticleAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
