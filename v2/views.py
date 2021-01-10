@@ -18,8 +18,26 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """Article view
     """
     lookup_field = 'id'
-    queryset = Article.objects.filter(is_visible=True)
+    queryset = Article.objects.filter(
+        is_visible=True).order_by('-date_created')
     serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        category_id = self.request.query_params.get('category_id')
+
+        queryset = super().get_queryset()
+
+        if search_term:
+            queryset = queryset.filter(
+                Q(title__icontains=search_term) |
+                Q(author__first_name=search_term) |
+                Q(author__last_name=search_term)
+            )
+        if category_id:
+            queryset = queryset.filter(category__id=category_id)
+
+        return queryset
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
