@@ -84,7 +84,8 @@ def publish_article(request):
     try:
         author = User.objects.get(
             Q(id=author_id) &
-            Q(profile__is_author=True)
+            Q(profile__is_author=True) &
+            Q(is_active=True)
         )
     except ObjectDoesNotExist:
         return Response('author not found', 400)

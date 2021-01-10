@@ -13,8 +13,10 @@ class UserAdmin(UserAdmin):
             return super().get_fieldsets(request, obj)
         else:
             if obj:
+                # Publisher has full governance over their authors for now
                 return (
-                    (None, {'fields': ['username', 'is_active']}),
+                    (None, {'fields': [
+                     'username', 'is_active', 'first_name', 'last_name']}),
                 )
             else:
                 return super().get_fieldsets(request, obj)
@@ -30,10 +32,7 @@ class UserAdmin(UserAdmin):
         if request.user.is_superuser:
             return self.readonly_fields
         else:
-            if obj:
-                return ['username', 'is_active']
-            else:
-                return []
+            return []
 
     def save_model(self, request, obj, form, change):
         super(UserAdmin, self).save_model(request, obj, form, change)
@@ -85,20 +84,15 @@ class ArticleAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'author':
-            if request.user.is_superuser:
-                kwargs["queryset"] = User.objects.filter(
-                    Q(profile__is_author=True) & Q(is_active=True)
-                )
-            else:
-                kwargs["queryset"] = User.objects.filter(
-                    Q(profile__is_author=True) &
-                    Q(is_active=True) &
-                    Q(profile__created_by=request.user)
-                )
+            kwargs["queryset"] = User.objects.filter(
+                Q(profile__is_author=True) &
+                Q(is_active=True)
+            )
         elif db_field.name == 'publisher':
             if request.user.is_superuser:
                 kwargs["queryset"] = User.objects.filter(
-                    Q(profile__is_publisher=True) & Q(is_active=True)
+                    Q(profile__is_publisher=True) &
+                    Q(is_active=True)
                 )
             else:
                 kwargs["queryset"] = User.objects.filter(
