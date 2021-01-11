@@ -12,18 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name']
 
 
-class ArticleSerializer(serializers.ModelSerializer):
-    """Article serializer
-    """
-
-    author = UserSerializer()
-
-    class Meta:
-        model = Article
-        fields = ['id', 'title', 'contents_file', 'header_image',
-                  'author', 'date_created', 'date_edited']
-
-
 class CategorySerializer(serializers.ModelSerializer):
     """Category serializer
     """
@@ -31,3 +19,16 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'label']
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    """Article serializer
+    """
+
+    author = UserSerializer()
+    category = CategorySerializer()
+
+    class Meta:
+        model = Article
+        fields = ['id', 'title', 'category', 'contents_file', 'header_image',
+                  'author', 'date_created', 'date_edited']
