@@ -60,7 +60,7 @@ Insert `.env` credentials into Heroku config vars.
 
 Deploy with:
 
-    heroku push origin master
+    git push heroku master
 
 Set up database:
 
