@@ -13,7 +13,7 @@ num_articles = 6
 def get_count(request):
     """Gets total article count
     """
-    articles = Article.objects.all()
+    articles = Article.objects.filter(is_visible=True)
     return Response({'data': {'count': articles.count()}})
 
 
@@ -28,9 +28,11 @@ def search(request):
 
     # TODO: mirror article content in db and replace with full-text search?
     articles = Article.objects.filter(
-        Q(title__icontains=search_term) |
-        Q(author__first_name=search_term) |
-        Q(author__last_name=search_term)
+        (
+            Q(title__icontains=search_term) |
+            Q(author__first_name=search_term) |
+            Q(author__last_name=search_term)
+        ) & Q(is_visible=True)
     ).order_by('-date_created')[:num_articles]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})
@@ -40,8 +42,9 @@ def search(request):
 def get_by_category(request, category_id):
     """Gets articles by category
     """
-    articles = Article.objects.filter(category__id=category_id).order_by(
-        '-date_created')[:num_articles]
+    articles = Article.objects.filter(
+        Q(category__id=category_id) & Q(is_visible=True)
+    ).order_by('-date_created')[:num_articles]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})
 
@@ -50,7 +53,8 @@ def get_by_category(request, category_id):
 def get_recent(request):
     """Gets recent articles
     """
-    articles = Article.objects.all().order_by('-date_created')[:num_articles]
+    articles = Article.objects.filter(is_visible=True).order_by(
+        '-date_created')[:num_articles]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})
 
@@ -60,7 +64,8 @@ def get_home(request):
     """Gets homepage articles
     """
     # TODO: Implement better homepage
-    articles = Article.objects.all().order_by('-date_created')[:num_articles]
+    articles = Article.objects.filter(is_visible=True).order_by(
+        '-date_created')[:num_articles]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})
 
@@ -70,7 +75,7 @@ def get_by_id(request, article_id):
     """Gets article by id
     """
     try:
-        article = Article.objects.get(id=article_id)
+        article = Article.objects.get(Q(is_visible=True) & Q(id=article_id))
         serializer = ArticleSerializer(article)
         return Response({'data': serializer.data})
     except ObjectDoesNotExist:
@@ -102,7 +107,7 @@ def list_all(request):
     except ValueError:
         return Response('offset must be an integer', 400)
 
-    articles = Article.objects.all().order_by(
+    articles = Article.objects.filter(is_visible=True).order_by(
         '-date_created')[offset:offset+amount]
     serializer = ArticleSerializer(articles, many=True)
     return Response({'data': {'articles': serializer.data, 'count': articles.count()}})

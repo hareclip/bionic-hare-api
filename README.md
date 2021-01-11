@@ -48,11 +48,11 @@ Run with:
     # Windows
     waitress-serve thehare.wsgi:application
 
-## Deploy with Docker
+### Deploy with Docker
 
     docker-compose up --build
 
-## Deploy on Heroku
+### Deploy on Heroku
 
 Create new Heroku app and attach Heroku Postgres resource.
 
@@ -67,6 +67,14 @@ Set up database:
     heroku run python manage.py migrate
     heroku run python manage.py loaddata categories.yaml
 
+
+## Managing Users
+
+Refer to [permissions guide](docs/PERMISSIONS.md) for admin and staff setup
+
+
 ## Project Layout
+
   - `core`: Core models
   - `v1`: Hare-compatible API
+  - `v2`: Bionic Hare re-write

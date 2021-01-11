@@ -1,5 +1,7 @@
 import os
 import uuid
+import magic
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
@@ -24,6 +26,27 @@ class RenameFile():
         else:
             filename = '{}.{}'.format(uuid.uuid4().hex, ext)
         return os.path.join(self.upload_to, filename)
+
+
+@deconstructible
+class FileValidator():
+    """
+    Factory to validates file field with magic
+    https://stackoverflow.com/questions/3648421/only-accept-a-certain-file-type-in-filefield-server-side
+    """
+
+    def __init__(self, valid_mime_types=[], valid_file_extensions=[]):
+        self.valid_mime_types = valid_mime_types
+        self.valid_file_extensions = valid_file_extensions
+
+    def __call__(self, file):
+        file_mime_type = magic.from_buffer(file.read(1024), mime=True)
+        if file_mime_type not in self.valid_mime_types:
+            raise ValidationError('Unsupported file type.')
+
+        ext = os.path.splitext(file.name)[1]
+        if ext.lower() not in self.valid_file_extensions:
+            raise ValidationError('Unacceptable file extension.')
 
 
 class Profile(models.Model):
@@ -70,7 +93,13 @@ class Article(models.Model):
     """Article model
     """
     title = models.CharField(max_length=300)
-    contents_file = models.FileField(upload_to=RenameFile('res/articles/'))
+    contents_file = models.FileField(
+        upload_to=RenameFile('res/articles/'),
+        validators=[FileValidator(
+            ['text/markdown', 'text/plain'],
+            ['.md'],
+        )],
+    )
     header_image = models.ImageField(upload_to=RenameFile('res/images/'))
     category = models.ForeignKey(
         Category, related_name='articles', on_delete=models.PROTECT)
@@ -80,6 +109,7 @@ class Article(models.Model):
         User, related_name='published_articles', on_delete=models.PROTECT)
     date_created = models.DateTimeField(auto_now_add=True)
     date_edited = models.DateTimeField(auto_now=True)
+    is_visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

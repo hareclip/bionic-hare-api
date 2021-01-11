@@ -80,6 +80,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'thehare.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
