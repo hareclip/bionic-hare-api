@@ -25,6 +25,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         search_term = self.request.query_params.get('search_term')
         category_id = self.request.query_params.get('category_id')
+        author_id = self.request.query_params.get('author_id')
 
         queryset = super().get_queryset()
 
@@ -36,6 +37,8 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
             )
         if category_id:
             queryset = queryset.filter(category__id=category_id)
+        if author_id:
+            queryset = queryset.filter(author__id=author_id)
 
         return queryset
 
